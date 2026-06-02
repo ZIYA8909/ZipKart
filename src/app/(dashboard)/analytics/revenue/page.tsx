@@ -79,17 +79,19 @@ export default function RevenueAnalyticsPage() {
       {/* Bottom: channel + products */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="lg:col-span-2 rounded-xl border border-border bg-card p-5 flex flex-col justify-between">
-          <div className="space-y-3">
-            <h2 className="text-sm font-semibold">Revenue by Channel</h2>
-            {loading ? <div className="skeleton h-48 rounded-lg" /> : (
+          <h2 className="text-sm font-semibold">Revenue by Channel</h2>
+          {loading ? (
+            <div className="skeleton h-48 rounded-lg my-auto" />
+          ) : (
+            <div className="w-full my-auto py-2">
               <DonutChartWidget
                 data={(data?.byChannel || []).map((c: any) => ({ name: c.channel, value: c.revenue }))}
                 format="currency"
                 height={185}
                 showLegend={false}
               />
-            )}
-          </div>
+            </div>
+          )}
           {!loading && data?.byChannel && (
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-4 border-t border-border/50">
               {(data.byChannel || []).map((c: any, i: number) => {
