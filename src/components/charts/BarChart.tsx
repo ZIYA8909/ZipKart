@@ -65,7 +65,7 @@ export function BarChartWidget({
         ) : (
           <>
             <XAxis dataKey={xKey} tick={{ fontSize: 10, angle: rotateLabels ? -25 : 0, textAnchor: rotateLabels ? "end" : "middle" }} axisLine={false} tickLine={false} dy={rotateLabels ? 4 : 8} interval={0} />
-            <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false}
+            <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} tickCount={5}
               tickFormatter={(v) => format === "currency" ? formatCurrency(v, "INR", true) : format === "percent" ? `${v}%` : formatNumber(v, true)}
             />
           </>
@@ -113,7 +113,7 @@ export function MultiColorBarChart({ data, xKey, valueKey, format = "number", he
       <RechartsBarChart data={data} margin={{ top: 4, right: 4, left: rotateLabels ? 8 : -16, bottom: rotateLabels ? 20 : 0 }} barCategoryGap="30%">
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey={xKey} tick={{ fontSize: 10, angle: rotateLabels ? -25 : 0, textAnchor: rotateLabels ? "end" : "middle" }} axisLine={false} tickLine={false} dy={rotateLabels ? 4 : 8} interval={0} />
-        <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false}
+        <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} tickCount={5}
           tickFormatter={(v) => format === "currency" ? formatCurrency(v, "USD", true) : formatNumber(v, true)}
         />
         <Tooltip content={<CustomTooltip format={format} />} />
