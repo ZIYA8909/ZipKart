@@ -139,7 +139,10 @@ export function Header() {
               <ChevronDown className="h-3.5 w-3.5 opacity-60" />
             </button>
             {activeDropdown === "analytics" && (
-              <div className="absolute left-0 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-lg animate-in z-50">
+              <div 
+                className="absolute left-0 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-lg animate-in z-50"
+                style={{ backgroundColor: "hsl(var(--card))" }}
+              >
                 {analyticsLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -171,7 +174,10 @@ export function Header() {
               <ChevronDown className="h-3.5 w-3.5 opacity-60" />
             </button>
             {activeDropdown === "workspace" && (
-              <div className="absolute left-0 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-lg animate-in z-50">
+              <div 
+                className="absolute left-0 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-lg animate-in z-50"
+                style={{ backgroundColor: "hsl(var(--card))" }}
+              >
                 {workspaceLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -202,7 +208,10 @@ export function Header() {
                 <ChevronDown className="h-3.5 w-3.5 opacity-60" />
               </button>
               {activeDropdown === "admin" && (
-                <div className="absolute left-0 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-lg animate-in z-50">
+                <div 
+                  className="absolute left-0 mt-1 w-48 rounded-lg border border-border bg-card p-1 shadow-lg animate-in z-50"
+                  style={{ backgroundColor: "hsl(var(--card))" }}
+                >
                   {adminLinks.map((link) => (
                     <Link
                       key={link.href}
@@ -275,7 +284,10 @@ export function Header() {
             </button>
 
             {profileOpen && (
-              <div className="absolute right-0 mt-2.5 w-56 rounded-lg border border-border bg-card p-1 shadow-lg animate-in z-50">
+              <div 
+                className="absolute right-0 mt-2.5 w-56 rounded-lg border border-border bg-card p-1 shadow-lg animate-in z-50"
+                style={{ backgroundColor: "hsl(var(--card))" }}
+              >
                 <div className="px-3 py-2 border-b border-border mb-1">
                   <p className="text-xs font-semibold truncate text-foreground">{session.user.name}</p>
                   <p className="text-[10px] text-muted-foreground truncate">{session.user.email}</p>
