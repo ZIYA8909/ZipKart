@@ -45,12 +45,13 @@ interface BarChartProps {
 export function BarChartWidget({
   data, xKey, bars, format = "number", height = 240, horizontal = false, stacked = false, rotateLabels = false
 }: BarChartProps) {
+  const finalHeight = rotateLabels ? height + 40 : height;
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <ResponsiveContainer width="100%" height={finalHeight}>
       <RechartsBarChart
         data={data}
         layout={horizontal ? "vertical" : "horizontal"}
-        margin={{ top: 4, right: 4, left: horizontal ? 80 : (rotateLabels ? 8 : -16), bottom: rotateLabels ? 48 : 0 }}
+        margin={{ top: 4, right: 4, left: horizontal ? 80 : (rotateLabels ? 8 : -16), bottom: rotateLabels ? 56 : 0 }}
         barGap={4}
         barCategoryGap="30%"
       >
@@ -72,7 +73,7 @@ export function BarChartWidget({
         )}
         <Tooltip content={<CustomTooltip format={format} />} />
         {bars.length > 1 && (
-          <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, paddingTop: rotateLabels ? 24 : 8 }} />
+          <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, paddingTop: rotateLabels ? 28 : 8 }} />
         )}
         {bars.map((bar, i) => (
           <Bar
@@ -89,19 +90,20 @@ export function BarChartWidget({
   );
 }
 
-// Single-bar chart with per-bar colors
-export function MultiColorBarChart({ data, xKey, valueKey, format = "number", height = 240 }: {
+export function MultiColorBarChart({ data, xKey, valueKey, format = "number", height = 240, rotateLabels = false }: {
   data: Record<string, string | number>[];
   xKey: string;
   valueKey: string;
   format?: "currency" | "number" | "percent";
   height?: number;
+  rotateLabels?: boolean;
 }) {
+  const finalHeight = rotateLabels ? height + 40 : height;
   return (
-    <ResponsiveContainer width="100%" height={height}>
-      <RechartsBarChart data={data} margin={{ top: 4, right: 4, left: -16, bottom: 0 }} barCategoryGap="30%">
+    <ResponsiveContainer width="100%" height={finalHeight}>
+      <RechartsBarChart data={data} margin={{ top: 4, right: 4, left: rotateLabels ? 8 : -16, bottom: rotateLabels ? 56 : 0 }} barCategoryGap="30%">
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey={xKey} tick={{ fontSize: 10 }} axisLine={false} tickLine={false} dy={8} interval={0} />
+        <XAxis dataKey={xKey} tick={{ fontSize: 10, angle: rotateLabels ? -25 : 0, textAnchor: rotateLabels ? "end" : "middle" }} axisLine={false} tickLine={false} dy={rotateLabels ? 4 : 8} interval={0} />
         <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false}
           tickFormatter={(v) => format === "currency" ? formatCurrency(v, "USD", true) : formatNumber(v, true)}
         />
