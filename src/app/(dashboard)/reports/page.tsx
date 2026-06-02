@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Plus, FileText, Clock, Calendar, Eye, MoreHorizontal, Trash2, Download, CheckCircle2, AlertCircle, Edit } from "lucide-react";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
+import { jsPDF } from "jspdf";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { REPORT_TYPES } from "@/lib/constants";
@@ -60,7 +61,7 @@ export default function ReportsPage() {
     } finally { setCreating(false); }
   };
 
-  const handleDownload = (report: any) => {
+  const handleDownloadCSV = (report: any) => {
     // Generate mock CSV rows based on the report type
     let mockDataRows = "";
     if (report.type === "revenue") {
@@ -124,6 +125,172 @@ export default function ReportsPage() {
     link.click();
     URL.revokeObjectURL(url);
     toast.success("Report downloaded successfully", { description: sanitizedFilename });
+  };
+
+  const handleDownloadPDF = (report: any) => {
+    const doc = new jsPDF();
+    
+    // Add border accent
+    doc.setDrawColor(13, 148, 136); // Teal color
+    doc.setLineWidth(1.5);
+    doc.line(10, 10, 200, 10);
+    
+    // Title
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.setTextColor(15, 23, 42); // slate-900
+    doc.text("ZipKart Marketplace Analytics", 10, 22);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(100, 116, 139); // slate-500
+    doc.text("Auto-Generated Enterprise Business Report", 10, 28);
+    
+    // Date
+    const today = new Date().toLocaleDateString("en-IN", {
+      day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit"
+    });
+    doc.text(`Generated on: ${today}`, 130, 28);
+    
+    // Separator
+    doc.setDrawColor(226, 232, 240); // slate-200
+    doc.setLineWidth(0.5);
+    doc.line(10, 32, 200, 32);
+    
+    // Report Title Header
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(15, 23, 42);
+    doc.text(report.name, 10, 42);
+    
+    // Report Description
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(71, 85, 105); // slate-600
+    const splitDesc = doc.splitTextToSize(report.description || "No description provided.", 180);
+    doc.text(splitDesc, 10, 48);
+    
+    // Metadata Block
+    const metaY = 48 + (splitDesc.length * 5) + 5;
+    
+    doc.setDrawColor(241, 245, 249); // slate-100
+    doc.setFillColor(250, 250, 250); // slate-50
+    doc.rect(10, metaY, 190, 35, "F");
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139);
+    doc.text("REPORT PROPERTIES", 14, metaY + 6);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.5);
+    doc.setTextColor(15, 23, 42);
+    
+    doc.text(`Report ID: ${report.id}`, 14, metaY + 14);
+    doc.text(`Type: ${report.type.toUpperCase()}`, 14, metaY + 20);
+    doc.text(`Status: ${report.status}`, 14, metaY + 26);
+    
+    doc.text(`Created By: ${report.createdBy?.name || "System"}`, 100, metaY + 14);
+    doc.text(`Frequency: ${report.scheduleFreq || "Manual"}`, 100, metaY + 20);
+    doc.text(`View Count: ${report.viewCount}`, 100, metaY + 26);
+    
+    // Mock Data Section
+    const dataY = metaY + 45;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(15, 23, 42);
+    doc.text("REPORT DATASETS", 10, dataY);
+    
+    // Draw simple table headers
+    let headers: string[] = [];
+    let rows: string[][] = [];
+    
+    if (report.type === "revenue") {
+      headers = ["Month", "Channel", "Revenue (INR)", "Margin %"];
+      rows = [
+        ["Jun 2025", "Partner API", "Rs. 4.40 Cr", "55.0%"],
+        ["Jun 2025", "App - iOS", "Rs. 4.60 Cr", "58.2%"],
+        ["Jun 2025", "App - Android", "Rs. 4.50 Cr", "56.5%"],
+        ["Jun 2025", "WhatsApp Commerce", "Rs. 4.50 Cr", "54.0%"],
+        ["Jun 2025", "Website", "Rs. 4.70 Cr", "52.3%"]
+      ];
+    } else if (report.type === "sales") {
+      headers = ["Date", "Product", "Region", "Revenue", "Units"];
+      rows = [
+        ["2025-06-01", "Redmi Note 13 Pro 5G", "North", "Rs. 1.90 Cr", "950"],
+        ["2025-06-01", "OnePlus Nord CE 3", "West", "Rs. 1.20 Cr", "600"],
+        ["2025-06-02", "Samsung Galaxy Tab S9", "South", "Rs. 1.50 Cr", "300"],
+        ["2025-06-02", "Nike Air Max 270", "East", "Rs. 80 Lakh", "800"]
+      ];
+    } else if (report.type === "products") {
+      headers = ["Product", "Category", "Avg Margin", "Status"];
+      rows = [
+        ["Redmi Note 13 Pro 5G", "Electronics", "30.0%", "In Stock"],
+        ["OnePlus Nord CE 3", "Electronics", "25.5%", "Low Stock"],
+        ["Samsung Galaxy Tab S9", "Electronics", "28.0%", "In Stock"],
+        ["Nike Air Max 270", "Fashion", "62.0%", "In Stock"]
+      ];
+    } else {
+      headers = ["Region", "Sales Vol", "Rev Share", "Active Users"];
+      rows = [
+        ["North metro", "15,400", "35.4%", "8,500"],
+        ["South metro", "12,200", "28.0%", "6,200"],
+        ["West metro", "9,800", "22.5%", "4,900"],
+        ["East metro", "6,100", "14.1%", "3,200"]
+      ];
+    }
+    
+    // Draw table
+    let currentY = dataY + 8;
+    
+    // Header background
+    doc.setFillColor(13, 148, 136); // Teal header
+    doc.rect(10, currentY, 190, 8, "F");
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    
+    const colWidth = 190 / headers.length;
+    headers.forEach((h, i) => {
+      doc.text(h, 12 + (i * colWidth), currentY + 5.5);
+    });
+    
+    currentY += 8;
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    doc.setTextColor(15, 23, 42);
+    
+    rows.forEach((row, rowIndex) => {
+      // Alternating background colors
+      if (rowIndex % 2 === 1) {
+        doc.setFillColor(248, 250, 252); // slate-50
+        doc.rect(10, currentY, 190, 7.5, "F");
+      }
+      
+      row.forEach((cell, cellIndex) => {
+        doc.text(cell, 12 + (cellIndex * colWidth), currentY + 5);
+      });
+      currentY += 7.5;
+    });
+    
+    // Footer
+    const footerY = 280;
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.5);
+    doc.line(10, footerY - 5, 200, footerY - 5);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184); // slate-400
+    doc.text("ZipKart Ltd · Confidential Business Analytics Report", 10, footerY);
+    doc.text("Page 1 of 1", 185, footerY);
+    
+    // Save PDF
+    const sanitizedFilename = report.name.toLowerCase().replace(/[^a-z0-9]+/g, "_") + "_report.pdf";
+    doc.save(sanitizedFilename);
+    toast.success("PDF Report generated successfully", { description: sanitizedFilename });
   };
 
   return (
@@ -218,11 +385,18 @@ export default function ReportsPage() {
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button 
-                    onClick={() => handleDownload(report)}
+                    onClick={() => handleDownloadCSV(report)}
                     className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     title="Download CSV"
                   >
                     <Download className="h-3.5 w-3.5" />
+                  </button>
+                  <button 
+                    onClick={() => handleDownloadPDF(report)}
+                    className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    title="Download PDF"
+                  >
+                    <FileText className="h-3.5 w-3.5 text-violet-500" />
                   </button>
                   <button className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
                     <Edit className="h-3.5 w-3.5" />
