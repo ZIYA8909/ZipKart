@@ -71,7 +71,7 @@ export default function ProductsAnalyticsPage() {
           {loading ? <div className="skeleton h-48 rounded-lg" /> :
             <BarChartWidget data={data?.byCategory || []} xKey="category"
               bars={[{ key: "revenue", label: "Revenue", color: "#0d9488" }, { key: "units", label: "Units", color: "#f97316" }]}
-              format="number" height={200} />}
+              format="number" height={200} rotateLabels={true} />}
         </div>
         <div className="rounded-xl border border-border bg-card p-5 space-y-3">
           <h2 className="text-sm font-semibold">Category Revenue Share</h2>

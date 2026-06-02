@@ -169,6 +169,7 @@ export default function OverviewPage() {
               bars={[{ key: "revenue", label: "Revenue", color: "#0d9488" }]}
               format="currency"
               height={192}
+              rotateLabels={true}
             />
           )}
         </div>

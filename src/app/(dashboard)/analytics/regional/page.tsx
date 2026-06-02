@@ -104,7 +104,7 @@ export default function RegionalAnalyticsPage() {
               data={data?.regions || []}
               xKey="region"
               bars={[{ key: "revenue", label: "Revenue", color: "#0d9488" }]}
-              format="currency" height={192} />}
+              format="currency" height={192} rotateLabels={true} />}
         </div>
         <div className="lg:col-span-2 rounded-xl border border-border bg-card p-5 space-y-3">
           <h2 className="text-sm font-semibold">Revenue Distribution</h2>

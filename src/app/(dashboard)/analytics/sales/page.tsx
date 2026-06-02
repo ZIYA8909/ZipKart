@@ -101,7 +101,7 @@ export default function SalesAnalyticsPage() {
         <div className="rounded-xl border border-border bg-card p-5 space-y-3">
           <h2 className="text-sm font-semibold">Revenue by Product Category</h2>
           {loading ? <div className="skeleton h-48 rounded-lg" /> :
-            <BarChartWidget data={data?.byCategory || []} xKey="category" bars={[{ key: "revenue", label: "Revenue", color: "#0d9488" }]} format="currency" height={192} />}
+            <BarChartWidget data={data?.byCategory || []} xKey="category" bars={[{ key: "revenue", label: "Revenue", color: "#0d9488" }]} format="currency" height={192} rotateLabels={true} />}
         </div>
 
         {/* Sales rep leaderboard */}

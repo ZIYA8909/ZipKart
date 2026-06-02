@@ -39,17 +39,18 @@ interface BarChartProps {
   height?: number;
   horizontal?: boolean;
   stacked?: boolean;
+  rotateLabels?: boolean;
 }
 
 export function BarChartWidget({
-  data, xKey, bars, format = "number", height = 240, horizontal = false, stacked = false
+  data, xKey, bars, format = "number", height = 240, horizontal = false, stacked = false, rotateLabels = false
 }: BarChartProps) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <RechartsBarChart
         data={data}
         layout={horizontal ? "vertical" : "horizontal"}
-        margin={{ top: 4, right: 4, left: horizontal ? 80 : -16, bottom: 0 }}
+        margin={{ top: 4, right: 4, left: horizontal ? 80 : (rotateLabels ? 8 : -16), bottom: rotateLabels ? 35 : 0 }}
         barGap={4}
         barCategoryGap="30%"
       >
@@ -63,7 +64,7 @@ export function BarChartWidget({
           </>
         ) : (
           <>
-            <XAxis dataKey={xKey} tick={{ fontSize: 10 }} axisLine={false} tickLine={false} dy={8} interval={0} />
+            <XAxis dataKey={xKey} tick={{ fontSize: 10, angle: rotateLabels ? -25 : 0, textAnchor: rotateLabels ? "end" : "middle" }} axisLine={false} tickLine={false} dy={rotateLabels ? 4 : 8} interval={0} />
             <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false}
               tickFormatter={(v) => format === "currency" ? formatCurrency(v, "INR", true) : format === "percent" ? `${v}%` : formatNumber(v, true)}
             />
