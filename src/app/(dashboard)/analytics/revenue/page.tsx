@@ -82,14 +82,12 @@ export default function RevenueAnalyticsPage() {
           <div className="space-y-3">
             <h2 className="text-sm font-semibold">Revenue by Channel</h2>
             {loading ? <div className="skeleton h-48 rounded-lg" /> : (
-              <div className="flex flex-col items-center justify-center">
-                <DonutChartWidget
-                  data={(data?.byChannel || []).map((c: any) => ({ name: c.channel, value: c.revenue }))}
-                  format="currency"
-                  height={185}
-                  showLegend={false}
-                />
-              </div>
+              <DonutChartWidget
+                data={(data?.byChannel || []).map((c: any) => ({ name: c.channel, value: c.revenue }))}
+                format="currency"
+                height={185}
+                showLegend={false}
+              />
             )}
           </div>
           {!loading && data?.byChannel && (
