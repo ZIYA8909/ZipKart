@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus, FileText, Clock, Calendar, Eye, MoreHorizontal, Trash2, Download, CheckCircle2, AlertCircle, Edit } from "lucide-react";
-import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { REPORT_TYPES } from "@/lib/constants";
@@ -58,6 +58,72 @@ export default function ReportsPage() {
       setForm({ name: "", description: "", type: "revenue" });
       fetchReports();
     } finally { setCreating(false); }
+  };
+
+  const handleDownload = (report: any) => {
+    // Generate mock CSV rows based on the report type
+    let mockDataRows = "";
+    if (report.type === "revenue") {
+      mockDataRows = [
+        "Month,Channel,Revenue (INR),Margin %",
+        "Jun 2025,Partner API,44000000,55.0",
+        "Jun 2025,App - iOS,46000000,58.2",
+        "Jun 2025,App - Android,45000000,56.5",
+        "Jun 2025,WhatsApp Commerce,45000000,54.0",
+        "Jun 2025,Website,47000000,52.3"
+      ].join("\n");
+    } else if (report.type === "sales") {
+      mockDataRows = [
+        "Date,Product,SKU,Region,Revenue (INR),Units Sold",
+        "2025-06-01,Redmi Note 13 Pro 5G,REDMI-13P,North,19000000,950",
+        "2025-06-01,OnePlus Nord CE 3,ONEPLUS-N3,West,12000000,600",
+        "2025-06-02,Samsung Galaxy Tab S9,SAMSUNG-S9,South,15000000,300",
+        "2025-06-02,Nike Air Max 270,NIKE-270,East,8000000,800"
+      ].join("\n");
+    } else if (report.type === "products") {
+      mockDataRows = [
+        "Product,SKU,Category,Avg Gross Margin,Inventory Status",
+        "Redmi Note 13 Pro 5G,REDMI-13P,Electronics,30.0%,In Stock",
+        "OnePlus Nord CE 3,ONEPLUS-N3,Electronics,25.5%,Low Stock",
+        "Samsung Galaxy Tab S9,SAMSUNG-S9,Electronics,28.0%,In Stock",
+        "Nike Air Max 270,NIKE-270,Fashion & Apparel,62.0%,In Stock"
+      ].join("\n");
+    } else {
+      mockDataRows = [
+        "Region,Sales Volume,Revenue Share %,Active Users",
+        "North metro,15400,35.4%,8500",
+        "South metro,12200,28.0%,6200",
+        "West metro,9800,22.5%,4900",
+        "East metro,6100,14.1%,3200"
+      ].join("\n");
+    }
+
+    const csvContent = [
+      "Report Property,Value",
+      `Report ID,${report.id}`,
+      `Report Name,"${report.name.replace(/"/g, '""')}"`,
+      `Description,"${(report.description || "").replace(/"/g, '""')}"`,
+      `Type,${report.type}`,
+      `Status,${report.status}`,
+      `Views,${report.viewCount}`,
+      `Scheduled,${report.isScheduled}`,
+      `Frequency,${report.scheduleFreq || "N/A"}`,
+      `Created By,${report.createdBy?.name || "System"}`,
+      `Last Updated,${report.updatedAt}`,
+      "",
+      "-- Report Dataset Preview --",
+      mockDataRows
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    const sanitizedFilename = report.name.toLowerCase().replace(/[^a-z0-9]+/g, "_") + "_report.csv";
+    link.download = sanitizedFilename;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast.success("Report downloaded successfully", { description: sanitizedFilename });
   };
 
   return (
@@ -151,8 +217,12 @@ export default function ReportsPage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
-                    <Download className="h-3.5 w-3.5" onClick={() => toast.success("Report downloaded")} />
+                  <button 
+                    onClick={() => handleDownload(report)}
+                    className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    title="Download CSV"
+                  >
+                    <Download className="h-3.5 w-3.5" />
                   </button>
                   <button className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
                     <Edit className="h-3.5 w-3.5" />
