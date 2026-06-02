@@ -110,3 +110,48 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const body = await req.json();
+    const { id, name, description, type, status, isScheduled, scheduleFreq } = body;
+    
+    if (!id) return NextResponse.json({ error: "Report ID is required" }, { status: 400 });
+    if (!name || name.trim().length < 2) return NextResponse.json({ error: "Report name must be at least 2 characters" }, { status: 400 });
+
+    const existing = await prisma.report.findUnique({ where: { id } });
+    if (!existing) return NextResponse.json({ error: "Report not found" }, { status: 404 });
+
+    const updated = await prisma.report.update({
+      where: { id },
+      data: {
+        name,
+        description,
+        type,
+        status,
+        isScheduled: isScheduled ?? false,
+        scheduleFreq,
+      },
+      include: { createdBy: { select: { id: true, name: true, email: true } } },
+    });
+
+    // Log activity
+    await prisma.activityLog.create({
+      data: {
+        userId: (session.user as any).id,
+        action: "UPDATE",
+        entity: "report",
+        entityId: id,
+        entityName: name,
+      },
+    });
+
+    return NextResponse.json(updated);
+  } catch (err) {
+    console.error("[REPORTS_PUT]", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

@@ -31,6 +31,16 @@ export default function ReportsPage() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ name: "", description: "", type: "revenue" });
+  const [editingReport, setEditingReport] = useState<any | null>(null);
+  const [updating, setUpdating] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    description: "",
+    type: "revenue",
+    status: "DRAFT",
+    isScheduled: false,
+    scheduleFreq: "weekly",
+  });
 
   const fetchReports = useCallback(async () => {
     setLoading(true);
@@ -311,6 +321,45 @@ export default function ReportsPage() {
     }
   };
 
+  const startEdit = (report: any) => {
+    setEditingReport(report);
+    setEditForm({
+      name: report.name,
+      description: report.description || "",
+      type: report.type,
+      status: report.status,
+      isScheduled: report.isScheduled || false,
+      scheduleFreq: report.scheduleFreq || "weekly",
+    });
+  };
+
+  const handleUpdate = async () => {
+    if (!editForm.name.trim()) { toast.error("Report name is required"); return; }
+    setUpdating(true);
+    try {
+      const res = await fetch("/api/reports", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editingReport.id,
+          ...editForm,
+        }),
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        toast.error(d.error || "Failed to update report");
+        return;
+      }
+      toast.success("Report updated successfully");
+      setEditingReport(null);
+      fetchReports();
+    } catch {
+      toast.error("Something went wrong while updating");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in">
       {/* Header */}
@@ -360,6 +409,53 @@ export default function ReportsPage() {
               <button onClick={handleCreate} disabled={creating}
                 className="rounded-lg gradient-brand text-white px-4 py-2 text-sm font-medium shadow-sm hover:opacity-90 disabled:opacity-50 transition-all">
                 {creating ? "Creating..." : "Create Report"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit modal */}
+      {editingReport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setEditingReport(null)} />
+          <div className="relative w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl space-y-4 animate-in">
+            <h2 className="text-base font-semibold">Edit Report</h2>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Report Name *</label>
+                <input value={editForm.name} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="e.g. Q3 Revenue Summary"
+                  className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Description</label>
+                <textarea value={editForm.description} onChange={(e) => setEditForm(f => ({ ...f, description: e.target.value }))}
+                  rows={2} placeholder="Optional description..."
+                  className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Report Type</label>
+                <select value={editForm.type} onChange={(e) => setEditForm(f => ({ ...f, type: e.target.value }))}
+                  className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                  {REPORT_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Status</label>
+                <select value={editForm.status} onChange={(e) => setEditForm(f => ({ ...f, status: e.target.value }))}
+                  className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                  <option value="DRAFT">Draft</option>
+                  <option value="PUBLISHED">Published</option>
+                  <option value="ARCHIVED">Archived</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <button onClick={() => setEditingReport(null)} className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-accent transition-colors">Cancel</button>
+              <button onClick={handleUpdate} disabled={updating}
+                className="rounded-lg gradient-brand text-white px-4 py-2 text-sm font-medium shadow-sm hover:opacity-90 disabled:opacity-50 transition-all">
+                {updating ? "Saving..." : "Save Changes"}
               </button>
             </div>
           </div>
@@ -416,7 +512,11 @@ export default function ReportsPage() {
                   >
                     <FileText className="h-3.5 w-3.5 text-violet-500" />
                   </button>
-                  <button className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+                  <button 
+                    onClick={() => startEdit(report)}
+                    className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    title="Edit Report"
+                  >
                     <Edit className="h-3.5 w-3.5" />
                   </button>
                   <button 
