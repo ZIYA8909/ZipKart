@@ -74,3 +74,39 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    if (!id) return NextResponse.json({ error: "Report ID is required" }, { status: 400 });
+
+    const report = await prisma.report.findUnique({
+      where: { id },
+    });
+    if (!report) return NextResponse.json({ error: "Report not found" }, { status: 404 });
+
+    await prisma.report.delete({
+      where: { id },
+    });
+
+    // Log activity
+    await prisma.activityLog.create({
+      data: {
+        userId: (session.user as any).id,
+        action: "DELETE",
+        entity: "report",
+        entityId: id,
+        entityName: report.name,
+      },
+    });
+
+    return NextResponse.json({ message: "Report deleted successfully" });
+  } catch (err) {
+    console.error("[REPORTS_DELETE]", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

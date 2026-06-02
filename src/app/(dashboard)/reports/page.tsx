@@ -293,6 +293,24 @@ export default function ReportsPage() {
     toast.success("PDF Report generated successfully", { description: sanitizedFilename });
   };
 
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to delete report "${name}"?`)) return;
+    try {
+      const res = await fetch(`/api/reports?id=${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        toast.error(d.error || "Failed to delete report");
+        return;
+      }
+      toast.success("Report deleted successfully");
+      fetchReports();
+    } catch {
+      toast.error("Something went wrong while deleting");
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in">
       {/* Header */}
@@ -400,6 +418,13 @@ export default function ReportsPage() {
                   </button>
                   <button className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
                     <Edit className="h-3.5 w-3.5" />
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(report.id, report.name)}
+                    className="flex h-6 w-6 items-center justify-center rounded text-red-500 hover:text-red-700 hover:bg-red-500/10 transition-colors"
+                    title="Delete Report"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
               </div>
