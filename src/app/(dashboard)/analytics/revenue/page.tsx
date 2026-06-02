@@ -78,10 +78,34 @@ export default function RevenueAnalyticsPage() {
 
       {/* Bottom: channel + products */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-        <div className="lg:col-span-2 rounded-xl border border-border bg-card p-5 space-y-3">
-          <h2 className="text-sm font-semibold">Revenue by Channel</h2>
-          {loading ? <div className="skeleton h-48 rounded-lg" /> :
-            <DonutChartWidget data={(data?.byChannel || []).map((c: any) => ({ name: c.channel, value: c.revenue }))} format="currency" height={200} />}
+        <div className="lg:col-span-2 rounded-xl border border-border bg-card p-5 flex flex-col justify-between">
+          <div className="space-y-3">
+            <h2 className="text-sm font-semibold">Revenue by Channel</h2>
+            {loading ? <div className="skeleton h-48 rounded-lg" /> : (
+              <div className="flex flex-col items-center justify-center">
+                <DonutChartWidget
+                  data={(data?.byChannel || []).map((c: any) => ({ name: c.channel, value: c.revenue }))}
+                  format="currency"
+                  height={185}
+                  showLegend={false}
+                />
+              </div>
+            )}
+          </div>
+          {!loading && data?.byChannel && (
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-4 border-t border-border/50">
+              {(data.byChannel || []).map((c: any, i: number) => {
+                const colors = ["#0d9488", "#f97316", "#10b981", "#f59e0b", "#ff6b6b", "#0ea5e9", "#14b8a6", "#ef4444"];
+                return (
+                  <div key={c.channel} className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full shrink-0" style={{ background: colors[i % colors.length] }} />
+                    <span className="text-xs text-muted-foreground truncate max-w-[95px]" title={c.channel}>{c.channel}</span>
+                    <span className="text-xs font-semibold tabular-nums ml-auto">{formatCurrency(c.revenue, "INR", true)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         <div className="lg:col-span-3 rounded-xl border border-border bg-card overflow-hidden">
