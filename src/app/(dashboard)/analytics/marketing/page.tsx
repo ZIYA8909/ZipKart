@@ -68,7 +68,7 @@ export default function MarketingAnalyticsPage() {
             <BarChartWidget
               data={data?.channelData || []} xKey="channel"
               bars={[{ key: "revenue", label: "Revenue", color: "#10b981" }, { key: "spend", label: "Spend", color: "#f97316" }]}
-              format="currency" height={210} />}
+              format="currency" height={210} rotateLabels={true} />}
         </div>
         <div className="rounded-xl border border-border bg-card p-5 space-y-3">
           <h2 className="text-sm font-semibold">ROAS by Channel</h2>
@@ -76,7 +76,7 @@ export default function MarketingAnalyticsPage() {
             <BarChartWidget
               data={data?.channelData || []} xKey="channel"
               bars={[{ key: "roas", label: "ROAS", color: "#f59e0b" }]}
-              format="number" height={210} />}
+              format="number" height={210} rotateLabels={true} />}
         </div>
       </div>
 
