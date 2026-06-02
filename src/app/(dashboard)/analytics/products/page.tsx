@@ -76,7 +76,13 @@ export default function ProductsAnalyticsPage() {
         <div className="rounded-xl border border-border bg-card p-5 space-y-3">
           <h2 className="text-sm font-semibold">Category Revenue Share</h2>
           {loading ? <div className="skeleton h-48 rounded-lg" /> :
-            <DonutChartWidget data={(data?.byCategory || []).map((c: any) => ({ name: c.category, value: c.revenue }))} format="currency" height={200} />}
+            <DonutChartWidget
+              data={(data?.byCategory || []).map((c: any) => ({ name: c.category, value: c.revenue }))}
+              format="currency"
+              height={200}
+              innerRadius={50}
+              outerRadius={75}
+            />}
         </div>
       </div>
 

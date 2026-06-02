@@ -84,8 +84,15 @@ export default function SalesAnalyticsPage() {
             <h2 className="text-sm font-semibold">Revenue by Channel</h2>
             <p className="text-xs text-muted-foreground">Share of revenue per channel</p>
           </div>
-          {loading ? <div className="skeleton h-52 rounded-lg" /> :
-            <DonutChartWidget data={(data?.byChannel || []).map((c: any) => ({ name: c.channel, value: c.revenue }))} format="currency" height={210} />}
+          {loading ? <div className="skeleton h-52 rounded-lg" /> : (
+            <DonutChartWidget
+              data={(data?.byChannel || []).map((c: any) => ({ name: c.channel, value: c.revenue }))}
+              format="currency"
+              height={210}
+              innerRadius={50}
+              outerRadius={75}
+            />
+          )}
         </div>
       </div>
 
