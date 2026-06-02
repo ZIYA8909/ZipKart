@@ -63,7 +63,7 @@ export function BarChartWidget({
           </>
         ) : (
           <>
-            <XAxis dataKey={xKey} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} dy={8} />
+            <XAxis dataKey={xKey} tick={{ fontSize: 10 }} axisLine={false} tickLine={false} dy={8} interval={0} />
             <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false}
               tickFormatter={(v) => format === "currency" ? formatCurrency(v, "INR", true) : format === "percent" ? `${v}%` : formatNumber(v, true)}
             />
@@ -100,7 +100,7 @@ export function MultiColorBarChart({ data, xKey, valueKey, format = "number", he
     <ResponsiveContainer width="100%" height={height}>
       <RechartsBarChart data={data} margin={{ top: 4, right: 4, left: -16, bottom: 0 }} barCategoryGap="30%">
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey={xKey} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} dy={8} />
+        <XAxis dataKey={xKey} tick={{ fontSize: 10 }} axisLine={false} tickLine={false} dy={8} interval={0} />
         <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false}
           tickFormatter={(v) => format === "currency" ? formatCurrency(v, "USD", true) : formatNumber(v, true)}
         />
