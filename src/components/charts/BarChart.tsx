@@ -50,7 +50,7 @@ export function BarChartWidget({
       <RechartsBarChart
         data={data}
         layout={horizontal ? "vertical" : "horizontal"}
-        margin={{ top: 4, right: 4, left: horizontal ? 80 : (rotateLabels ? 8 : -16), bottom: rotateLabels ? 35 : 0 }}
+        margin={{ top: 4, right: 4, left: horizontal ? 80 : (rotateLabels ? 8 : -16), bottom: rotateLabels ? 48 : 0 }}
         barGap={4}
         barCategoryGap="30%"
       >
@@ -72,7 +72,7 @@ export function BarChartWidget({
         )}
         <Tooltip content={<CustomTooltip format={format} />} />
         {bars.length > 1 && (
-          <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+          <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, paddingTop: rotateLabels ? 24 : 8 }} />
         )}
         {bars.map((bar, i) => (
           <Bar
