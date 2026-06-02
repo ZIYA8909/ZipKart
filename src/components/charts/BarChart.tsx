@@ -50,7 +50,7 @@ export function BarChartWidget({
       <RechartsBarChart
         data={data}
         layout={horizontal ? "vertical" : "horizontal"}
-        margin={{ top: 4, right: 4, left: horizontal ? 80 : (rotateLabels ? 8 : -16), bottom: rotateLabels ? 35 : 0 }}
+        margin={{ top: 4, right: 4, left: horizontal ? 80 : (rotateLabels ? 8 : -16), bottom: rotateLabels ? 20 : 0 }}
         barGap={4}
         barCategoryGap="30%"
       >
@@ -110,7 +110,7 @@ export function MultiColorBarChart({ data, xKey, valueKey, format = "number", he
 }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <RechartsBarChart data={data} margin={{ top: 4, right: 4, left: rotateLabels ? 8 : -16, bottom: rotateLabels ? 35 : 0 }} barCategoryGap="30%">
+      <RechartsBarChart data={data} margin={{ top: 4, right: 4, left: rotateLabels ? 8 : -16, bottom: rotateLabels ? 20 : 0 }} barCategoryGap="30%">
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey={xKey} tick={{ fontSize: 10, angle: rotateLabels ? -25 : 0, textAnchor: rotateLabels ? "end" : "middle" }} axisLine={false} tickLine={false} dy={rotateLabels ? 4 : 8} interval={0} />
         <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false}
