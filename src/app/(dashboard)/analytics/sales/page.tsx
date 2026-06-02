@@ -89,8 +89,8 @@ export default function SalesAnalyticsPage() {
               data={(data?.byChannel || []).map((c: any) => ({ name: c.channel, value: c.revenue }))}
               format="currency"
               height={210}
-              innerRadius={50}
-              outerRadius={75}
+              innerRadius={35}
+              outerRadius={55}
             />
           )}
         </div>

@@ -111,7 +111,11 @@ export default function RegionalAnalyticsPage() {
           {loading ? <div className="skeleton h-48 rounded-lg" /> :
             <DonutChartWidget
               data={(data?.regions || []).map((r: any) => ({ name: r.region.split(" ")[0], value: r.revenue }))}
-              format="currency" height={200} />}
+              format="currency"
+              height={200}
+              innerRadius={35}
+              outerRadius={55}
+            />}
         </div>
       </div>
 

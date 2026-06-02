@@ -124,6 +124,8 @@ export default function OverviewPage() {
                 data={data?.trafficData || []}
                 format="number"
                 height={220}
+                innerRadius={45}
+                outerRadius={65}
                 showLegend={false}
               />
               <div className="space-y-1.5">

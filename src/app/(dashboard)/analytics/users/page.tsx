@@ -74,7 +74,11 @@ export default function UsersAnalyticsPage() {
           {loading ? <div className="skeleton h-52 rounded-lg" /> :
             <DonutChartWidget
               data={(data?.trafficSources || []).map((s: any) => ({ name: s.source, value: s.sessions }))}
-              format="number" height={210} />}
+              format="number"
+              height={210}
+              innerRadius={35}
+              outerRadius={55}
+            />}
         </div>
       </div>
 

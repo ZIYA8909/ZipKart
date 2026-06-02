@@ -80,8 +80,8 @@ export default function ProductsAnalyticsPage() {
               data={(data?.byCategory || []).map((c: any) => ({ name: c.category, value: c.revenue }))}
               format="currency"
               height={200}
-              innerRadius={50}
-              outerRadius={75}
+              innerRadius={35}
+              outerRadius={55}
             />}
         </div>
       </div>
