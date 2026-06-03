@@ -7,7 +7,10 @@ import path from "path";
 
 config({ path: path.join(process.cwd(), ".env") });
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL!,
+  ssl: process.env.DATABASE_URL?.includes("neon.tech") ? { rejectUnauthorized: false } : undefined,
+});
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
