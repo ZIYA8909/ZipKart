@@ -35,15 +35,3 @@ An enterprise-grade, high-performance Business Intelligence (BI) and analytics S
 *   **Utilities**: [Zod](https://zod.dev/) (validation) & [Date-fns v4](https://date-fns.org/) (date arithmetic)
 
 ---
-
-## ⚡ Getting Started
-
-### 1. Prerequisites
-Ensure you have [Node.js](https://nodejs.org/) installed (v18+ recommended) and a running Neon PostgreSQL instance.
-
-### 2. Clone and Setup Environment
-Clone the repository and create a `.env` file in the root directory:
-
-```bash
-git clone https://github.com/ZIYA8909/ZipKart.git
-cd ZipKart
