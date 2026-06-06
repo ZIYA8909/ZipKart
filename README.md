@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 ZipKart Analytics
 
-## Getting Started
+An enterprise-grade, high-performance Business Intelligence (BI) and analytics SaaS platform built for modern e-commerce marketplaces. ZipKart transforms raw e-commerce sales, user, and campaign data into beautiful, actionable insights through high-fidelity charts, automated reports, and user-friendly data import pipelines.
 
-First, run the development server:
+---
+
+## 🚀 Key Features
+
+*   **📊 Dynamic BI Dashboards**: Interactive metrics tracking key performance indicators (KPIs) like Gross Merchandise Value (GMV), customer acquisition cost, retention rates, and operating margins.
+*   **🧩 Rich Analytical Modules**:
+    *   **Sales**: Top-selling products, category distribution, and sales rep performance.
+    *   **Revenue**: MRR/ARR trajectories, cohort analysis, and revenue streams.
+    *   **Users**: Daily Active Users (DAU), Monthly Active Users (MAU), session logs, and channel attribution.
+    *   **Products**: Symmetrical category performance charts with margin and COGS tracking.
+    *   **Regional**: Interactive geography breakdowns covering sales hotspots.
+    *   **Marketing**: Marketing campaigns analyzer monitoring ROAS, impressions, CTR, and CPC.
+*   **📥 CSV Import Engine**: Drag-and-drop file upload engine with client-side CSV parsing, data preview, and column schema mapping.
+*   **📅 Automated Reports**: Schedule reports (daily, weekly, monthly) and manage drafts or published reporting configs.
+*   **🛡️ Admin Control Panel**: Role-Based Access Control (RBAC) user list, API key generator, settings management, and a complete paginated system audit log.
+*   **✨ Premium Visual Theme**:
+    *   Sleek horizontal navigation header with solid, opaque dropdown menus.
+    *   Modern off-white responsive light theme combined with an obsidian dark theme.
+    *   Interactive login screen featuring an elegant, orbiting particle canvas background.
+
+---
+
+## 🛠️ Technology Stack
+
+*   **Framework**: [Next.js 16](https://nextjs.org/) (App Router & Server Actions)
+*   **Database**: [Neon PostgreSQL](https://neon.tech/) (Serverless Postgres database)
+*   **ORM**: [Prisma v7](https://www.prisma.io/) (with `@prisma/adapter-pg` & SSL config)
+*   **Authentication**: [Auth.js v5](https://authjs.dev/) (NextAuth with JWT stateless sessions & RBAC)
+*   **Charts**: [Recharts 3](https://recharts.org/) (Custom tooltip, axis tick rotations, and collision prevention)
+*   **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) & [Framer Motion](https://www.framer.com/motion/)
+*   **Utilities**: [Zod](https://zod.dev/) (validation) & [Date-fns v4](https://date-fns.org/) (date arithmetic)
+
+---
+
+## ⚡ Getting Started
+
+### 1. Prerequisites
+Ensure you have [Node.js](https://nodejs.org/) installed (v18+ recommended) and a running Neon PostgreSQL instance.
+
+### 2. Clone and Setup Environment
+Clone the repository and create a `.env` file in the root directory:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/ZIYA8909/ZipKart.git
+cd ZipKart
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Configure your `.env` environment variables:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+DATABASE_URL="postgresql://neondb_owner:YOUR_PASSWORD@ep-your-pooler-id.aws.neon.tech/neondb?sslmode=require"
+AUTH_SECRET="your-32-byte-base64-secret-key"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*Note: In production environments, remove `AUTH_URL` and `NEXTAUTH_URL` variables to allow Auth.js to auto-infer your Vercel deployment URL.*
 
-## Learn More
+### 3. Install Dependencies
+```bash
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Database Setup & Seeding
+Deploy database migrations to create the tables, then seed the database with 2 years of e-commerce data (generating over 260K records):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Apply migrations
+npm run db:migrate
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Seed data
+npm run db:seed
+```
 
-## Deploy on Vercel
+#### Seed Credentials
+Once seeded, the database contains three demo accounts representing different RBAC roles:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@zipkart.io` | `Admin@123!` |
+| **Analyst** | `analyst@zipkart.io` | `Analyst@123!` |
+| **Viewer** | `viewer@zipkart.io` | `Viewer@123!` |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 5. Start the Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3001](http://localhost:3001) in your browser to explore the dashboard.
+
+---
+
+## 🚢 Production Deployment
+
+This project is configured to deploy seamlessly to [Vercel](https://vercel.com).
+
+1. Import your repository into Vercel.
+2. In Vercel Project Settings, add your environment variables (`DATABASE_URL`, `AUTH_SECRET`).
+3. Set the build command to automatically generate the Prisma client:
+   ```bash
+   prisma generate && next build
+   ```
+4. Verify deployment and log in with your seeded administrator credentials!
