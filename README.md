@@ -37,3 +37,5 @@ An enterprise-grade, high-performance Business Intelligence (BI) and analytics S
 ---
 
 ## 🚀 Try it out - https://zip-kart-swart.vercel.app/login
+
+<img width="1918" height="1031" alt="Image" src="https://github.com/user-attachments/assets/37383003-d010-4f36-9f19-add8663f2467" />
