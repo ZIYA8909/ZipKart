@@ -35,3 +35,5 @@ An enterprise-grade, high-performance Business Intelligence (BI) and analytics S
 *   **Utilities**: [Zod](https://zod.dev/) (validation) & [Date-fns v4](https://date-fns.org/) (date arithmetic)
 
 ---
+
+## 🚀 Try it out - https://zip-kart-swart.vercel.app/login
